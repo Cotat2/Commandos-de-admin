@@ -96,9 +96,11 @@ end
 
 -- *** CÓDIGO DE LA INTERFAZ GRÁFICA (UI) ***
 local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "PanelDeControlAdmin"
 screenGui.Parent = player.PlayerGui
 
 local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MenuPrincipal"
 mainFrame.Size = UDim2.new(0, 200, 0, 300)
 mainFrame.Position = UDim2.new(0, 60, 0.5, -150)
 mainFrame.AnchorPoint = Vector2.new(0, 0.5)
@@ -106,9 +108,11 @@ mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 mainFrame.BorderColor3 = Color3.new(0, 0, 0)
 mainFrame.Active = true
 mainFrame.Draggable = true
-**mainFrame.Visible = true** -- Ahora el menú está visible por defecto
+mainFrame.Parent = screenGui
+mainFrame.Visible = true -- Ahora el menú está visible por defecto
 
 local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "BotonDeToggle"
 toggleButton.Size = UDim2.new(0, 40, 0, 40)
 toggleButton.Position = UDim2.new(0, 10, 0.5, -20)
 toggleButton.AnchorPoint = Vector2.new(0, 0.5)
@@ -166,3 +170,5 @@ end)
 toggleButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
 end)
+
+**print("El panel de admin ha sido forzado a mostrarse.")**
