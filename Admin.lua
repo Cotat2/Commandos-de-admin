@@ -106,7 +106,7 @@ mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 mainFrame.BorderColor3 = Color3.new(0, 0, 0)
 mainFrame.Active = true
 mainFrame.Draggable = true
-mainFrame.Visible = false -- Se oculta por defecto
+**mainFrame.Visible = true** -- Ahora el menú está visible por defecto
 
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 40, 0, 40)
