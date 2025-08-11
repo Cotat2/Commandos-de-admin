@@ -1,5 +1,4 @@
--- La base del script de Delta
--- Empieza por conseguir tu personaje y su 'Humanoid'
+-- La base del script
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
@@ -73,8 +72,6 @@ local function toggleInvisibility()
     end
 end
 
--- *** NUEVAS FUNCIONES DE CONTROL ***
-
 -- El poder de congelar a un jugador.
 local function freezePlayer(targetPlayer)
     if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
@@ -89,36 +86,83 @@ end
 -- El poder de descongelar a un jugador.
 local function unfreezePlayer(targetPlayer)
     if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-        targetPlayer.Character.Humanoid.WalkSpeed = 16 -- La velocidad por defecto.
-        targetPlayer.Character.Humanoid.JumpPower = 50 -- El salto por defecto.
+        targetPlayer.Character.Humanoid.WalkSpeed = 16
+        targetPlayer.Character.Humanoid.JumpPower = 50
         print(targetPlayer.Name .. " ha sido descongelado.")
     else
         print("Jugador no encontrado.")
     end
 end
 
--- La varita mágica para activar tus poderes con comandos de chat
-player.Chatted:Connect(function(message)
-    local args = message:split(" ")
-    local command = args[1]:lower()
-    local targetName = args[2]
-    local targetPlayer = game.Players:FindFirstChild(targetName)
+-- *** CÓDIGO DE LA INTERFAZ GRÁFICA (UI) ***
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
 
-    if command == "!fly" then
-        toggleFly()
-    elseif command == "!noclip" then
-        toggleNoclip()
-    elseif command == "!speed" then
-        toggleSpeedHack()
-    elseif command == "!jump" then
-        toggleSuperJump()
-    elseif command == "!invis" then
-        toggleInvisibility()
-    elseif command == "!tp" and #args == 4 then
-        teleportPlayer(tonumber(args[2]), tonumber(args[3]), tonumber(args[4]))
-    elseif command == "!freeze" then
-        freezePlayer(targetPlayer)
-    elseif command == "!unfreeze" then
-        unfreezePlayer(targetPlayer)
-    end
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 300)
+mainFrame.Position = UDim2.new(0, 60, 0.5, -150)
+mainFrame.AnchorPoint = Vector2.new(0, 0.5)
+mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+mainFrame.BorderColor3 = Color3.new(0, 0, 0)
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Visible = false -- Se oculta por defecto
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 40, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -20)
+toggleButton.AnchorPoint = Vector2.new(0, 0.5)
+toggleButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+toggleButton.BorderColor3 = Color3.new(0, 0, 0)
+toggleButton.CornerRadius = UDim.new(0, 20)
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.Text = "O"
+toggleButton.TextColor3 = Color3.new(1, 1, 1)
+toggleButton.TextScaled = true
+toggleButton.Parent = screenGui
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 5)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = mainFrame
+
+local function createButton(text, clickFunction)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 30)
+    button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+    button.BorderColor3 = Color3.new(0, 0, 0)
+    button.Font = Enum.Font.SourceSansBold
+    button.Text = text
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.TextScaled = true
+    button.Parent = mainFrame
+    button.MouseButton1Click:Connect(clickFunction)
+    return button
+end
+
+local flyButton = createButton("Fly", toggleFly)
+local noclipButton = createButton("Noclip", toggleNoclip)
+local speedButton = createButton("Speed", toggleSpeedHack)
+local jumpButton = createButton("Jump", toggleSuperJump)
+local invisButton = createButton("Invisibility", toggleInvisibility)
+
+local playerInput = Instance.new("TextBox")
+playerInput.PlaceholderText = "Nombre del Jugador"
+playerInput.Size = UDim2.new(1, 0, 0, 30)
+playerInput.Parent = mainFrame
+
+local freezeButton = createButton("Freeze", function()
+    local targetName = playerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(targetName)
+    freezePlayer(targetPlayer)
+end)
+
+local unfreezeButton = createButton("Unfreeze", function()
+    local targetName = playerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(targetName)
+    unfreezePlayer(targetPlayer)
+end)
+
+toggleButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
 end)
